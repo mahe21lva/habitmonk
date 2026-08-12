@@ -22,6 +22,27 @@
 
   --measure: 65ch;        /* comfortable reading width  */
   --page-x: 2rem;
+
+  color-scheme: light;
+}
+
+/* ── Dark mode — warm ink, the same tokens flipped ─────────
+   A deep navy-charcoal ground with warm cream text keeps the
+   classical feel; gold stays the accent. Every surface follows
+   because it reads from these variables.                      */
+[data-theme="dark"] {
+  --paper:      #16202B;
+  --surface:    #1E2A36;
+  --ink:        #ECE4D2;
+  --navy:       #A6C1DA;
+  --gold:       #C9A24C;
+  --gold-deep:  #D9B96E;
+  --muted:      #B4AB97;
+  --faint:      #8E8774;
+  --hairline:   #2A3540;
+  --cool:       #8FA0B0;
+
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -31,6 +52,7 @@ html {
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  transition: background-color 0.3s ease;
 }
 
 body {
@@ -39,6 +61,7 @@ body {
   font-size: 19px;
   line-height: 1.65;
   color: var(--muted);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4 {
@@ -53,6 +76,7 @@ a { color: var(--navy); text-decoration: none; }
 a:hover { color: var(--gold-deep); }
 
 ::selection { background: #EFE4C6; }
+[data-theme="dark"] ::selection { background: #33414E; color: var(--ink); }
 
 /* the signature: a short gold rule used sparingly */
 .rule {

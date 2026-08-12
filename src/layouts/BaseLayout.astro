@@ -27,6 +27,13 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem('theme');
+        const theme = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -43,22 +50,55 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
           <img class="brand-mark" src="/logo-mark.png" alt="" width="30" height="40" />
           <span class="brand-word">habitmonk</span>
         </a>
-        <nav class="nav" aria-label="Primary">
-          {nav.map((item) => (
-            <a
-              href={item.href}
-              class:list={['nav-link', { active: path === item.href }]}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
+        <div class="head-right">
+          <nav class="nav" aria-label="Primary">
+            {nav.map((item) => (
+              <a
+                href={item.href}
+                class:list={['nav-link', { active: path === item.href }]}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+          <button
+            id="theme-toggle"
+            class="theme-toggle"
+            type="button"
+            aria-label="Toggle dark mode"
+            title="Toggle light / dark"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+                 stroke="currentColor" stroke-width="1.6"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 18h6" />
+              <path d="M10 21h4" />
+              <path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.2V16h6v-.3c0-.8.4-1.6 1-2.2A6 6 0 0 0 12 3z" />
+            </svg>
+          </button>
+        </div>
       </div>
     </header>
 
     <main>
       <slot />
     </main>
+
+    <script is:inline>
+      (() => {
+        const btn = document.getElementById('theme-toggle');
+        if (!btn) return;
+        const root = document.documentElement;
+        const sync = () => btn.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
+        sync();
+        btn.addEventListener('click', () => {
+          const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+          root.dataset.theme = next;
+          localStorage.setItem('theme', next);
+          sync();
+        });
+      })();
+    </script>
 
     <footer class="site-foot">
       <div class="wrap foot-inner">
@@ -108,10 +148,41 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
         letter-spacing: 0.02em;
         color: var(--navy);
       }
+      .head-right {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+      }
       .nav {
         display: flex;
         flex-wrap: wrap;
         gap: 1.25rem;
+      }
+      .theme-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        flex-shrink: 0;
+        background: transparent;
+        border: 1px solid var(--hairline);
+        border-radius: 50%;
+        color: var(--faint);
+        cursor: pointer;
+        transition: color 0.2s ease, border-color 0.2s ease;
+      }
+      .theme-toggle:hover { color: var(--gold-deep); border-color: var(--gold); }
+      .theme-toggle svg { display: block; }
+      /* bulb glows gold when dark mode is on */
+      :global([data-theme="dark"]) .theme-toggle {
+        color: var(--gold);
+        border-color: var(--gold);
+      }
+      /* the logo mark is navy line art — lighten it on the dark ground */
+      :global([data-theme="dark"]) .brand-mark {
+        filter: brightness(0) invert(0.86) sepia(0.22) saturate(1.3);
       }
       .nav-link {
         font-family: var(--font-meta);
@@ -168,6 +239,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 
       @media (max-width: 600px) {
         .head-inner { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+        .head-right { width: 100%; justify-content: space-between; }
         .nav { gap: 1rem; }
       }
     </style>
