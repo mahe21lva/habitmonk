@@ -1,0 +1,84 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Space+Grotesk:wght@400;500&display=swap');
+
+/* ── The Study — design tokens ─────────────────────────────
+   navy + gold + warm cream, drawn from the Habit Monk mark.
+   Classical palette, modern restraint.                       */
+:root {
+  --paper:      #FAF6EC;  /* page background            */
+  --surface:    #FDFBF5;  /* raised surfaces            */
+  --ink:        #1A2E48;  /* headlines + primary text   */
+  --navy:       #22405E;  /* brand, links               */
+  --gold:       #A67C2E;  /* accent (rules, emblem)     */
+  --gold-deep:  #8A6A2E;  /* gold text on light         */
+  --muted:      #5C5646;  /* secondary body text        */
+  --faint:      #9A8A5E;  /* metadata, dates            */
+  --hairline:   #E7DEC8;  /* dividers                   */
+  --cool:       #6E7D8C;  /* "forming" status           */
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'EB Garamond', Georgia, serif;
+  --font-meta:    'Space Grotesk', system-ui, sans-serif;
+
+  --measure: 65ch;        /* comfortable reading width  */
+  --page-x: 2rem;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 19px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0;
+}
+
+a { color: var(--navy); text-decoration: none; }
+a:hover { color: var(--gold-deep); }
+
+::selection { background: #EFE4C6; }
+
+/* the signature: a short gold rule used sparingly */
+.rule {
+  width: 44px;
+  height: 2px;
+  background: var(--gold);
+  border: 0;
+  margin: 1rem 0;
+}
+
+/* the small caps meta label used for eyebrows + status */
+.meta {
+  font-family: var(--font-meta);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.wrap { max-width: 900px; margin: 0 auto; padding: 0 var(--page-x); }
+.prose-measure { max-width: var(--measure); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .fade-up { animation: fadeUp 0.6s cubic-bezier(0.2, 0.6, 0.2, 1) both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}

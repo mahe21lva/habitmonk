@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WritingEntry from '../../components/WritingEntry.astro';
+
+const essays = (await getCollection('articles'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Writing — The Habit Monk">
+  <section class="wrap page">
+    <header class="page-head">
+      <span class="meta">Writing</span>
+      <h1 class="page-title">Essays, worked out in public.</h1>
+      <hr class="rule" />
+      <p class="page-lede">
+        Longer pieces across two selves — the work-self on learning science and
+        cognition, and the citizen-self on society, history, and contemporary
+        India.
+      </p>
+    </header>
+
+    <div class="list">
+      {essays.map((e) => (
+        <WritingEntry
+          href={`/writing/${e.id}`}
+          title={e.data.title}
+          date={e.data.date}
+          excerpt={e.data.excerpt}
+          topic={e.data.topic}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding: 4rem 0 0; }
+  .page-head { max-width: 60ch; margin-bottom: 2rem; }
+  .page-title { font-size: clamp(32px, 4.5vw, 44px); margin-top: 0.6rem; }
+  .page-lede { font-family: var(--font-body); font-size: 19px; color: var(--muted); margin: 0; }
+</style>

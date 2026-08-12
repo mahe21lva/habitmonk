@@ -1,0 +1,68 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const positions = await getCollection('society');
+  return positions.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const fmt = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric', month: 'long', year: 'numeric',
+}).format(entry.data.date);
+---
+
+<BaseLayout title={`${entry.data.title} — Society`} description={entry.data.summary}>
+  <article class="wrap post">
+    <a href="/society" class="back">&larr; Society</a>
+    <header class="post-head">
+      <span class="meta">
+        <span class:list={['status', entry.data.status]}>{entry.data.status}</span>
+        <span class="sep">·</span>{fmt}
+      </span>
+      <h1 class="post-title">{entry.data.title}</h1>
+    </header>
+    <div class="content prose-measure">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post { padding: 3rem 0 0; }
+  .back {
+    font-family: var(--font-meta);
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+  }
+  .back:hover { color: var(--navy); }
+  .post-head { margin: 2rem 0 2.5rem; max-width: 60ch; }
+  .status { text-transform: uppercase; }
+  .status.held    { color: var(--gold-deep); }
+  .status.forming { color: var(--navy); }
+  .status.revised { color: #7A5A8A; }
+  .sep { margin: 0 0.5rem; color: var(--hairline); }
+  .post-title { font-size: clamp(32px, 4.5vw, 46px); margin-top: 0.7rem; }
+
+  .content { font-size: 20px; line-height: 1.7; color: var(--ink); }
+  .content :global(p) { margin: 0 0 1.4rem; }
+  .content :global(h2) { font-size: 27px; margin: 2.5rem 0 1rem; }
+  .content :global(h3) { font-size: 22px; margin: 2rem 0 0.8rem; }
+  .content :global(blockquote) {
+    border-left: 2px solid var(--gold);
+    margin: 1.6rem 0;
+    padding: 0.2rem 0 0.2rem 1.4rem;
+    font-style: italic;
+    color: var(--muted);
+  }
+  .content :global(a) { border-bottom: 1px solid var(--hairline); }
+  .content :global(hr) { border: 0; border-top: 1px solid var(--hairline); margin: 2.5rem 0; }
+  .content :global(em) { color: var(--navy); }
+</style>

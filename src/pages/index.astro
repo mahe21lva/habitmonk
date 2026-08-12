@@ -1,0 +1,97 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SocietyEntry from '../components/SocietyEntry.astro';
+import WritingEntry from '../components/WritingEntry.astro';
+
+const society = (await getCollection('society'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const writing = (await getCollection('articles'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy fade-up">
+        <h1 class="hero-title">Thought, carried toward the truth.</h1>
+        <hr class="rule" />
+        <p class="hero-sub">
+          A record of one mind changing — on learning, on society, on itself.
+          Readings, essays, and positions on the world, dated and revised as
+          understanding deepens.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap block">
+    <div class="block-head">
+      <span class="meta">From the Society</span>
+      <a href="/society" class="more">All positions &rarr;</a>
+    </div>
+    {society.map((e) => (
+      <SocietyEntry
+        href={`/society/${e.id}`}
+        title={e.data.title}
+        date={e.data.date}
+        status={e.data.status}
+        summary={e.data.summary}
+      />
+    ))}
+  </section>
+
+  <section class="wrap block">
+    <div class="block-head">
+      <span class="meta">Writing</span>
+      <a href="/writing" class="more">All essays &rarr;</a>
+    </div>
+    {writing.map((e) => (
+      <WritingEntry
+        href={`/writing/${e.id}`}
+        title={e.data.title}
+        date={e.data.date}
+        excerpt={e.data.excerpt}
+        topic={e.data.topic}
+      />
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .hero { padding: 5rem 0 3.5rem; }
+  .hero-title {
+    font-size: clamp(38px, 6vw, 60px);
+    letter-spacing: -0.01em;
+    max-width: 16ch;
+  }
+  .hero-sub {
+    font-family: var(--font-body);
+    font-size: 20px;
+    color: var(--muted);
+    max-width: 54ch;
+    margin: 0;
+  }
+
+  .block { margin-top: 4rem; }
+  .block-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  .more {
+    font-family: var(--font-meta);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+  }
+  .more:hover { color: var(--navy); }
+
+  @media (max-width: 720px) {
+    .hero { padding-top: 3.5rem; }
+  }
+</style>

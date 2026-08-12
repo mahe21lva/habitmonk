@@ -1,0 +1,68 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const essays = await getCollection('articles');
+  return essays.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const fmt = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric', month: 'long', year: 'numeric',
+}).format(entry.data.date);
+
+const topicLabel =
+  entry.data.topic === 'work' ? 'Work-self'
+  : entry.data.topic === 'citizen' ? 'Citizen-self'
+  : null;
+---
+
+<BaseLayout title={`${entry.data.title} — Writing`} description={entry.data.excerpt}>
+  <article class="wrap post">
+    <a href="/writing" class="back">&larr; Writing</a>
+    <header class="post-head">
+      <span class="meta">
+        {fmt}{topicLabel && <><span class="sep">·</span>{topicLabel}</>}
+      </span>
+      <h1 class="post-title">{entry.data.title}</h1>
+    </header>
+    <div class="content prose-measure">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post { padding: 3rem 0 0; }
+  .back {
+    font-family: var(--font-meta);
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+  }
+  .back:hover { color: var(--navy); }
+  .post-head { margin: 2rem 0 2.5rem; max-width: 62ch; }
+  .sep { margin: 0 0.5rem; color: var(--hairline); }
+  .post-title { font-size: clamp(32px, 5vw, 50px); margin-top: 0.7rem; }
+
+  .content { font-size: 20px; line-height: 1.75; color: var(--ink); }
+  .content :global(p) { margin: 0 0 1.5rem; }
+  .content :global(h2) { font-size: 28px; margin: 2.6rem 0 1rem; }
+  .content :global(h3) { font-size: 22px; margin: 2rem 0 0.8rem; }
+  .content :global(blockquote) {
+    border-left: 2px solid var(--gold);
+    margin: 1.6rem 0;
+    padding: 0.2rem 0 0.2rem 1.4rem;
+    font-style: italic;
+    color: var(--muted);
+  }
+  .content :global(a) { border-bottom: 1px solid var(--hairline); }
+  .content :global(hr) { border: 0; border-top: 1px solid var(--hairline); margin: 2.5rem 0; }
+  .content :global(em) { color: var(--navy); }
+</style>

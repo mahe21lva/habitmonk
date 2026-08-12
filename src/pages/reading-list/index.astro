@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookEntry from '../../components/BookEntry.astro';
+
+const queue = (await getCollection('readlist'))
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<BaseLayout title="Reading List — The Habit Monk">
+  <section class="wrap page">
+    <header class="page-head">
+      <span class="meta">Reading List</span>
+      <h1 class="page-title">Queued, and why.</h1>
+      <hr class="rule" />
+      <p class="page-lede">
+        The books waiting their turn — kept public so the intention stays honest.
+      </p>
+    </header>
+
+    <div class="list">
+      {queue.map((b) => (
+        <BookEntry title={b.data.title} author={b.data.author} note={b.data.why} />
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding: 4rem 0 0; }
+  .page-head { max-width: 60ch; margin-bottom: 2rem; }
+  .page-title { font-size: clamp(32px, 4.5vw, 44px); margin-top: 0.6rem; }
+  .page-lede { font-family: var(--font-body); font-size: 19px; color: var(--muted); margin: 0; }
+</style>

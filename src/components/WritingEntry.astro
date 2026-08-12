@@ -1,0 +1,58 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  date: Date;
+  excerpt?: string;
+  topic?: 'work' | 'citizen';
+}
+
+const { href, title, date, excerpt, topic } = Astro.props;
+
+const fmt = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric', month: 'long', year: 'numeric',
+}).format(date);
+
+const topicLabel = topic === 'work' ? 'Work-self' : topic === 'citizen' ? 'Citizen-self' : null;
+---
+
+<a href={href} class="entry">
+  <h3 class="title">{title}</h3>
+  {excerpt && <p class="excerpt">{excerpt}</p>}
+  <span class="meta-row">
+    <span class="date">{fmt}</span>
+    {topicLabel && <span class="dot">·</span>}
+    {topicLabel && <span class="topic">{topicLabel}</span>}
+  </span>
+</a>
+
+<style>
+  .entry {
+    display: block;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--hairline);
+    color: inherit;
+  }
+  .entry:hover .title { color: var(--gold-deep); }
+  .title {
+    font-size: 24px;
+    transition: color 0.2s ease;
+  }
+  .excerpt {
+    font-family: var(--font-body);
+    font-size: 18px;
+    color: var(--muted);
+    margin: 0.4rem 0 0.6rem;
+    max-width: 62ch;
+  }
+  .meta-row {
+    font-family: var(--font-meta);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .topic { color: var(--gold-deep); }
+</style>

@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookEntry from '../../components/BookEntry.astro';
+
+const books = (await getCollection('readings'))
+  .sort((a, b) => b.data.finished.getTime() - a.data.finished.getTime());
+
+const fmt = (d: Date) =>
+  new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric' }).format(d);
+---
+
+<BaseLayout title="Readings — The Habit Monk">
+  <section class="wrap page">
+    <header class="page-head">
+      <span class="meta">Readings</span>
+      <h1 class="page-title">Books, finished and marked.</h1>
+      <hr class="rule" />
+      <p class="page-lede">
+        What I've read, most recent first — with a line on what actually stuck.
+      </p>
+    </header>
+
+    <div class="list">
+      {books.map((b) => (
+        <BookEntry
+          title={b.data.title}
+          author={b.data.author}
+          meta={`Finished ${fmt(b.data.finished)}`}
+          note={b.data.note}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page { padding: 4rem 0 0; }
+  .page-head { max-width: 60ch; margin-bottom: 2rem; }
+  .page-title { font-size: clamp(32px, 4.5vw, 44px); margin-top: 0.6rem; }
+  .page-lede { font-family: var(--font-body); font-size: 19px; color: var(--muted); margin: 0; }
+</style>
