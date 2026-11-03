@@ -11,10 +11,10 @@ This is comfortable and mostly wrong.
 
 ## What changed my mind
 
-I used to treat merit as a forward-looking property — something you have that
+I used to treat merit as a forward-looking property, something you have that
 then produces outcomes. Watching enough trajectories up close, the causation
 looks reversed: the outcome arrives, and merit is the narrative we assemble to
 make it feel earned.
 
-None of this means effort is fake. It means the *accounting* is off, and the
+None of this means effort is fake. It is just that the initial, necessary, sufficient and boundary conditions are simplified for some, and for others, they are steeper and largely invisible to those who never had to meet them. It means the *accounting* is off, and the
 accounting has consequences for who we blame and who we help.

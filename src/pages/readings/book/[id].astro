@@ -1,0 +1,78 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { facultyBySlug } from '../../../data/faculties';
+
+export const getStaticPaths = (async () => {
+  const entries = await getCollection('readings');
+  return entries.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const faculty = facultyBySlug[entry.data.faculty];
+const hasBody = !!entry.body && entry.body.trim().length > 0;
+const finished = entry.data.finished?.long ?? null;
+---
+
+<BaseLayout title={`${entry.data.title} — Readings`} description={entry.data.note}>
+  <article class="wrap post">
+    <a href={`/readings/${faculty.slug}`} class="back">&larr; {faculty.name}</a>
+    <header class="post-head">
+      <span class="meta">
+        {entry.data.author}{finished && <><span class="sep">·</span>Finished {finished}</>}
+      </span>
+      <h1 class="post-title">{entry.data.title}</h1>
+    </header>
+
+    {entry.data.note && <p class="lede prose-measure">{entry.data.note}</p>}
+
+    {hasBody && (
+      <div class="content prose-measure">
+        <Content />
+      </div>
+    )}
+  </article>
+</BaseLayout>
+
+<style>
+  .post { padding: 3rem 0 0; }
+  .back {
+    font-family: var(--font-meta);
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+  }
+  .back:hover { color: var(--navy); }
+  .post-head { margin: 2rem 0 2rem; max-width: 60ch; }
+  .sep { margin: 0 0.5rem; color: var(--hairline); }
+  .post-title { font-size: clamp(32px, 4.5vw, 46px); margin-top: 0.7rem; }
+
+  .lede {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 21px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0 0 2rem;
+    padding-left: 1.2rem;
+    border-left: 2px solid var(--gold);
+  }
+
+  .content { font-size: 20px; line-height: 1.7; color: var(--ink); }
+  .content :global(p) { margin: 0 0 1.4rem; }
+  .content :global(h2) { font-size: 27px; margin: 2.5rem 0 1rem; }
+  .content :global(h3) { font-size: 22px; margin: 2rem 0 0.8rem; }
+  .content :global(blockquote) {
+    border-left: 2px solid var(--gold);
+    margin: 1.6rem 0;
+    padding: 0.2rem 0 0.2rem 1.4rem;
+    font-style: italic;
+    color: var(--muted);
+  }
+  .content :global(a) { border-bottom: 1px solid var(--hairline); }
+  .content :global(hr) { border: 0; border-top: 1px solid var(--hairline); margin: 2.5rem 0; }
+  .content :global(em) { color: var(--navy); }
+</style>

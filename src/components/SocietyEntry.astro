@@ -1,17 +1,17 @@
 ---
+import type { Finished } from '../data/finished';
+
 interface Props {
   href: string;
   title: string;
-  date: Date;
+  date: Finished;
   status: 'forming' | 'held' | 'revised';
   summary?: string;
 }
 
 const { href, title, date, status, summary } = Astro.props;
 
-const fmt = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric', month: 'long', year: 'numeric',
-}).format(date);
+const fmt = date.long;
 ---
 
 <a href={href} class="entry">

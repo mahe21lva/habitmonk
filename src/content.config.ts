@@ -1,14 +1,17 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { toFinished } from './data/finished';
 
 // Society — living positions on the world. Versioned, never deleted.
 const society = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/society' }),
   schema: z.object({
     title: z.string(),
-    date: z.coerce.date(),
+    // "2020-12" (month only) or a full date like 2026-06-15 — see src/data/finished.ts
+    date: z.union([z.string(), z.number(), z.date()]).transform((v) => toFinished(v)!),
     status: z.enum(['forming', 'held', 'revised']),
     summary: z.string().optional(),
+    evolution: z.string().optional(), // how this view has changed over time
   }),
 });
 
@@ -23,14 +26,19 @@ const articles = defineCollection({
   }),
 });
 
-// Readings — finished books, with a note on what stuck.
+// Readings — finished books, grouped by the faculty they train.
+// The markdown BODY (below the frontmatter) is the full essay, when a book
+// earns one. `note` stays the short take shown in every list.
 const readings = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/readings' }),
   schema: z.object({
     title: z.string(),
     author: z.string(),
-    finished: z.coerce.date(),
+    faculty: z.enum(['think', 'learn', 'do', 'know-yourself', 'be', 'build']), // grouping
+    subthread: z.string().optional(),    // e.g. the Krishnamurti thread under Be
     note: z.string().optional(),
+    // "2019", "2016, 2018", "2024-10" or a full date — see src/data/finished.ts
+    finished: z.union([z.string(), z.number(), z.date()]).optional().transform(toFinished),
   }),
 });
 

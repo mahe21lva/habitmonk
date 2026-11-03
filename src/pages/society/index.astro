@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SocietyEntry from '../../components/SocietyEntry.astro';
 
 const positions = (await getCollection('society'))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort((a, b) => b.data.date.date.getTime() - a.data.date.date.getTime());
 ---
 
 <BaseLayout title="Society — The Habit Monk">

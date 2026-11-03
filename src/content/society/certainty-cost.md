@@ -6,7 +6,7 @@ summary: "The better question is rarely 'am I sure' but 'how cheaply can I undo 
 ---
 
 For years my decision instinct optimised for being *right*. I've revised toward
-optimising for *reversibility* — how cheaply a choice can be unwound.
+optimising for *reversibility* "how cheaply a choice can be unwound".
 
 ## The revision
 

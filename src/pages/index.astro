@@ -5,7 +5,7 @@ import SocietyEntry from '../components/SocietyEntry.astro';
 import WritingEntry from '../components/WritingEntry.astro';
 
 const society = (await getCollection('society'))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .sort((a, b) => b.data.date.date.getTime() - a.data.date.date.getTime())
   .slice(0, 3);
 
 const writing = (await getCollection('articles'))

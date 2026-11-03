@@ -4,3 +4,9 @@ dist/
 .DS_Store
 .vercel/
 npm-debug.log*
+_to_delete/
+
+# local-only files
+src/content/.obsidian/
+src/*.pdf
+READINGS_CHANGES.md

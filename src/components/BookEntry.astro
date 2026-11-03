@@ -2,16 +2,19 @@
 interface Props {
   title: string;
   author: string;
-  meta?: string;      // e.g. "Finished 4 August 2026"
+  meta?: string;      // e.g. "Finished August 2026"
   note?: string;
+  href?: string;      // set only when the book has a full essay (its body is non-empty)
 }
 
-const { title, author, meta, note } = Astro.props;
+const { title, author, meta, note, href } = Astro.props;
 ---
 
 <div class="book">
   <div class="head">
-    <span class="title">{title}</span>
+    {href
+      ? <a class="title title-link" href={href}>{title}</a>
+      : <span class="title">{title}</span>}
     <span class="author">{author}</span>
   </div>
   {meta && <span class="when">{meta}</span>}
@@ -33,6 +36,14 @@ const { title, author, meta, note } = Astro.props;
     font-family: var(--font-display);
     font-size: 20px;
     color: var(--ink);
+  }
+  .title-link {
+    border-bottom: 1px solid var(--hairline);
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .title-link:hover {
+    color: var(--gold-deep);
+    border-color: var(--gold);
   }
   .author {
     font-family: var(--font-body);
