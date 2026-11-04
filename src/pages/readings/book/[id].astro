@@ -12,14 +12,15 @@ export const getStaticPaths = (async () => {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const faculty = facultyBySlug[entry.data.faculty];
+const faculty = entry.data.faculty ? facultyBySlug[entry.data.faculty] : undefined;
+const back = faculty ? { href: `/readings/${faculty.slug}`, label: faculty.name } : { href: '/readings', label: 'Readings' };
 const hasBody = !!entry.body && entry.body.trim().length > 0;
 const finished = entry.data.finished?.long ?? null;
 ---
 
 <BaseLayout title={`${entry.data.title} — Readings`} description={entry.data.note}>
   <article class="wrap post">
-    <a href={`/readings/${faculty.slug}`} class="back">&larr; {faculty.name}</a>
+    <a href={back.href} class="back">&larr; {back.label}</a>
     <header class="post-head">
       <span class="meta">
         {entry.data.author}{finished && <><span class="sep">·</span>Finished {finished}</>}

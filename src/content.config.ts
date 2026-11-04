@@ -34,7 +34,8 @@ const readings = defineCollection({
   schema: z.object({
     title: z.string(),
     author: z.string(),
-    faculty: z.enum(['think', 'learn', 'do', 'know-yourself', 'be', 'build']), // grouping
+    faculty: z.enum(['think', 'learn', 'do', 'know-yourself', 'be', 'build']).optional(), // the curated shelf
+    subject: z.string().optional(), // e.g. History, Politics, AI — for books outside the faculties
     subthread: z.string().optional(),    // e.g. the Krishnamurti thread under Be
     note: z.string().optional(),
     // "2019", "2016, 2018", "2024-10" or a full date — see src/data/finished.ts
