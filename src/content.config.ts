@@ -49,6 +49,7 @@ const readlist = defineCollection({
     title: z.string(),
     author: z.string(),
     why: z.string().optional(),
+    month: z.string().regex(/^\d{4}-\d{2}$/).optional(), // "2026-11" — when I plan to read it
   }),
 });
 

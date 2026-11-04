@@ -3,8 +3,35 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import BookEntry from '../../components/BookEntry.astro';
 
-const queue = (await getCollection('readlist'))
+// Books are grouped by the `month` in their frontmatter ("2026-11").
+// Books with no month sit under "Later".
+const books = (await getCollection('readlist'))
   .sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+// Labels are worked out when the site is built, so rebuild at the start of a month.
+const now = new Date();
+const key = (y: number, m: number) => `${y}-${String(m + 1).padStart(2, '0')}`;
+const thisMonth = key(now.getFullYear(), now.getMonth());
+const next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+const nextMonth = key(next.getFullYear(), next.getMonth());
+
+const monthName = (m: string) => {
+  const [y, mm] = m.split('-').map(Number);
+  return new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+    .format(new Date(Date.UTC(y, mm - 1, 1)));
+};
+const labelFor = (m: string) =>
+  m === thisMonth ? 'This month' : m === nextMonth ? 'Next month' : monthName(m);
+
+const months = [...new Set(books.map((b) => b.data.month).filter(Boolean) as string[])].sort();
+const groups = [
+  ...months.map((m) => ({
+    label: labelFor(m),
+    sub: labelFor(m) === monthName(m) ? undefined : monthName(m),
+    list: books.filter((b) => b.data.month === m),
+  })),
+  { label: 'Later', sub: undefined, list: books.filter((b) => !b.data.month) },
+].filter((g) => g.list.length > 0);
 ---
 
 <BaseLayout title="Reading List — The Habit Monk">
@@ -13,16 +40,23 @@ const queue = (await getCollection('readlist'))
       <span class="meta">Reading List</span>
       <h1 class="page-title">Queued, and why.</h1>
       <hr class="rule" />
-      <p class="page-lede">
-        The books waiting their turn — kept public so the intention stays honest.
-      </p>
+      <p class="page-lede">The books waiting their turn.</p>
     </header>
 
-    <div class="list">
-      {queue.map((b) => (
-        <BookEntry title={b.data.title} author={b.data.author} note={b.data.why} />
-      ))}
-    </div>
+    {groups.map((g) => (
+      <section class="group">
+        <div class="group-head">
+          <span class="group-name">{g.label}</span>
+          {g.sub && <span class="group-sub">{g.sub}</span>}
+          <span class="group-count">{g.list.length}</span>
+        </div>
+        <div class="list">
+          {g.list.map((b) => (
+            <BookEntry title={b.data.title} author={b.data.author} note={b.data.why} />
+          ))}
+        </div>
+      </section>
+    ))}
   </section>
 </BaseLayout>
 
@@ -31,4 +65,22 @@ const queue = (await getCollection('readlist'))
   .page-head { max-width: 60ch; margin-bottom: 2rem; }
   .page-title { font-size: clamp(32px, 4.5vw, 44px); margin-top: 0.6rem; }
   .page-lede { font-family: var(--font-body); font-size: 19px; color: var(--muted); margin: 0; }
+
+  .group { margin-top: 3rem; }
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--gold);
+  }
+  .group-name { font-family: var(--font-display); font-size: 26px; color: var(--ink); }
+  .group-sub { font-family: var(--font-body); font-style: italic; font-size: 16px; color: var(--faint); }
+  .group-count {
+    margin-left: auto;
+    font-family: var(--font-meta);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+  }
 </style>
