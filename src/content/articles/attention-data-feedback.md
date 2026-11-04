@@ -23,7 +23,7 @@ We often hear that our ability to pay attention is diminishing. In an age of end
 
 I agree with the concern. But I want to hold on to the thought for a moment.
 
-While reading *Psycho-Cybernetics*, I came across something interesting. Maxwell Maltz was writing in an era when television was becoming increasingly popular. There were already concerns about how television might affect human cognition, attention and our ability to think.
+While reading [*How to Read a Book*](/readings/book/how-to-read-a-book), I came across something interesting. Mortimer Adler was writing in an era when radio and television were becoming part of everyday life. He described them as "artificial props": they give us the illusion of active thinking while actually encouraging mental passivity.
 
 It got me thinking.
 
