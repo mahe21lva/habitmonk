@@ -2,6 +2,7 @@
 title: "Closing the Loop at the Cognition Layer"
 date: 2026-05-14
 topic: work
+grewFrom: log-towards-clarity
 excerpt: "Learning isn't simply about climbing the Bloom's ladder. It is also about recognising what holds us back at each step and bridging those gaps."
 ---
 

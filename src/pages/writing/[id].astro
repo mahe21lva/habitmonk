@@ -13,6 +13,14 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
+const all = await getCollection('articles');
+const parent = entry.data.grewFrom ? all.find((e) => e.id === entry.data.grewFrom) : undefined;
+if (entry.data.grewFrom && !parent) throw new Error(`grewFrom "${entry.data.grewFrom}" in ${entry.id} doesn't match any article`);
+const children = all
+  .filter((e) => e.data.grewFrom === entry.id)
+  .sort((a, b) => a.data.date.date.getTime() - b.data.date.date.getTime());
+const stageOf = (e: typeof entry) => (e.data.stage === 'forming' ? 'Level 0 · Forming' : null);
+
 const fmt = entry.data.date.long;
 const forming = entry.data.stage === 'forming';
 
@@ -34,18 +42,57 @@ const topicLabel =
       {forming && (
         <p class="forming-note">
           A forming piece, written while the idea was still taking shape. Short
-          lines, unrevised, kept as it was. A refined version comes later.
+          lines, unrevised, kept as it was.{children.length === 0 && ' A refined version comes later.'}
         </p>
       )}
     </header>
     <div class:list={['content', 'prose-measure', { forming }]}>
       <Content />
     </div>
+
+    {(parent || children.length > 0) && (
+      <aside class="lineage prose-measure">
+        <span class="lineage-label">How this idea grew</span>
+        {parent && (
+          <p>
+            <span class="lineage-rel">Grew out of</span>
+            <a href={`/writing/${parent.id}`}>{parent.data.title}</a>
+            <span class="lineage-meta">{parent.data.date.label}{stageOf(parent) && ` · ${stageOf(parent)}`}</span>
+          </p>
+        )}
+        {children.map((c) => (
+          <p>
+            <span class="lineage-rel">Led to</span>
+            <a href={`/writing/${c.id}`}>{c.data.title}</a>
+            <span class="lineage-meta">{c.data.date.label}{stageOf(c) && ` · ${stageOf(c)}`}</span>
+          </p>
+        ))}
+      </aside>
+    )}
   </article>
 </BaseLayout>
 
 <style>
   .stage { color: var(--cool); }
+  .lineage {
+    margin: 3rem 0 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--hairline);
+  }
+  .lineage-label {
+    display: block;
+    font-family: var(--font-meta);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 0.6rem;
+  }
+  .lineage p { margin: 0.35rem 0; font-family: var(--font-body); font-size: 18px; }
+  .lineage-rel { color: var(--muted); margin-right: 0.5rem; }
+  .lineage a { color: var(--ink); border-bottom: 1px solid var(--hairline); }
+  .lineage a:hover { color: var(--gold-deep); }
+  .lineage-meta { margin-left: 0.6rem; font-family: var(--font-meta); font-size: 12px; color: var(--faint); }
   .forming-note {
     margin: 1rem 0 0;
     font-family: var(--font-body);

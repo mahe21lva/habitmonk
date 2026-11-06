@@ -26,6 +26,8 @@ const articles = defineCollection({
     topic: z.enum(['work', 'citizen']).optional(),
     // stage: forming → a Level 0 piece: raw, short lines, the idea still taking shape
     stage: z.enum(['forming']).optional(),
+    // grewFrom: the file name (without .md) of the earlier piece this one grew out of
+    grewFrom: z.string().optional(),
   }),
 });
 
