@@ -1,6 +1,6 @@
 ---
 title: "Attention, Data and Feedback Are All You Need"
-date: 2024-05-01
+date: "2024-05"
 topic: work
 excerpt: "Every system that receives feedback can steer itself toward its goal, but only if attention, data and feedback all work together."
 ---

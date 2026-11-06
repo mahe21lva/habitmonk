@@ -13,9 +13,8 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const fmt = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric', month: 'long', year: 'numeric',
-}).format(entry.data.date);
+const fmt = entry.data.date.long;
+const forming = entry.data.stage === 'forming';
 
 const topicLabel =
   entry.data.topic === 'work' ? 'Work-self'
@@ -29,16 +28,33 @@ const topicLabel =
     <header class="post-head">
       <span class="meta">
         {fmt}{topicLabel && <><span class="sep">·</span>{topicLabel}</>}
+        {forming && <><span class="sep">·</span><span class="stage">Level 0 · Forming</span></>}
       </span>
       <h1 class="post-title">{entry.data.title}</h1>
+      {forming && (
+        <p class="forming-note">
+          A forming piece, written while the idea was still taking shape. Short
+          lines, unrevised, kept as it was. A refined version comes later.
+        </p>
+      )}
     </header>
-    <div class="content prose-measure">
+    <div class:list={['content', 'prose-measure', { forming }]}>
       <Content />
     </div>
   </article>
 </BaseLayout>
 
 <style>
+  .stage { color: var(--cool); }
+  .forming-note {
+    margin: 1rem 0 0;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--faint);
+  }
+  .content.forming :global(p) { margin: 0 0 1.6rem; line-height: 1.6; }
+
   .post { padding: 3rem 0 0; }
   .back {
     font-family: var(--font-meta);

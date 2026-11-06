@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import WritingEntry from '../../components/WritingEntry.astro';
 
 const essays = (await getCollection('articles'))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort((a, b) => b.data.date.date.getTime() - a.data.date.date.getTime());
 ---
 
 <BaseLayout title="Writing — The Habit Monk">
@@ -28,6 +28,7 @@ const essays = (await getCollection('articles'))
           date={e.data.date}
           excerpt={e.data.excerpt}
           topic={e.data.topic}
+          stage={e.data.stage}
         />
       ))}
     </div>

@@ -1,17 +1,18 @@
 ---
+import type { Finished } from '../data/finished';
+
 interface Props {
   href: string;
   title: string;
-  date: Date;
+  date: Finished;
   excerpt?: string;
   topic?: 'work' | 'citizen';
+  stage?: 'forming';
 }
 
-const { href, title, date, excerpt, topic } = Astro.props;
+const { href, title, date, excerpt, topic, stage } = Astro.props;
 
-const fmt = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric', month: 'long', year: 'numeric',
-}).format(date);
+const fmt = date.long;
 
 const topicLabel = topic === 'work' ? 'Work-self' : topic === 'citizen' ? 'Citizen-self' : null;
 ---
@@ -23,6 +24,8 @@ const topicLabel = topic === 'work' ? 'Work-self' : topic === 'citizen' ? 'Citiz
     <span class="date">{fmt}</span>
     {topicLabel && <span class="dot">·</span>}
     {topicLabel && <span class="topic">{topicLabel}</span>}
+    {stage === 'forming' && <span class="dot">·</span>}
+    {stage === 'forming' && <span class="stage">Level 0 · Forming</span>}
   </span>
 </a>
 
@@ -55,4 +58,5 @@ const topicLabel = topic === 'work' ? 'Work-self' : topic === 'citizen' ? 'Citiz
     align-items: center;
   }
   .topic { color: var(--gold-deep); }
+  .stage { color: var(--cool); }
 </style>

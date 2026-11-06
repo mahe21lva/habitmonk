@@ -9,7 +9,7 @@ const society = (await getCollection('society'))
   .slice(0, 3);
 
 const writing = (await getCollection('articles'))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .sort((a, b) => b.data.date.date.getTime() - a.data.date.date.getTime())
   .slice(0, 3);
 ---
 
@@ -56,6 +56,7 @@ const writing = (await getCollection('articles'))
         date={e.data.date}
         excerpt={e.data.excerpt}
         topic={e.data.topic}
+        stage={e.data.stage}
       />
     ))}
   </section>

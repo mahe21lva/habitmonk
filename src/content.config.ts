@@ -20,9 +20,12 @@ const articles = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/articles' }),
   schema: z.object({
     title: z.string(),
-    date: z.coerce.date(),
+    // "2025-08" (month only) or a full date — see src/data/finished.ts
+    date: z.union([z.string(), z.number(), z.date()]).transform((v) => toFinished(v)!),
     excerpt: z.string().optional(),
     topic: z.enum(['work', 'citizen']).optional(),
+    // stage: forming → a Level 0 piece: raw, short lines, the idea still taking shape
+    stage: z.enum(['forming']).optional(),
   }),
 });
 
